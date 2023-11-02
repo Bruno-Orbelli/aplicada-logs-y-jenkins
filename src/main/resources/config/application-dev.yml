@@ -18,7 +18,15 @@ logging:
     ROOT: DEBUG
     tech.jhipster: DEBUG
     org.hibernate.SQL: DEBUG
-    com.ingsoftaplicada.intcontinua: DEBUG
+    com.ingdesoftaplicada.logs: DEBUG
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    enabled: false # By default, the JHipster Registry is not used in the "dev" profile
+    service-url:
+      defaultZone: http://admin:${jhipster.registry.password}@localhost:8761/eureka/
 
 spring:
   devtools:
@@ -30,6 +38,14 @@ spring:
   jackson:
     serialization:
       indent-output: true
+  cloud:
+    config:
+      uri: http://admin:${jhipster.registry.password}@localhost:8761/config
+      # name of the config server's property source (file.yml) that we want to use
+      name: logProject
+      profile: dev
+      label: main # toggle to switch to a different version of the configuration as stored in git
+      # it can be set to any label, branch or commit of the configuration source Git repository
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:h2:file:./target/h2db/db/logproject;DB_CLOSE_DELAY=-1;MODE=LEGACY
@@ -55,6 +71,20 @@ spring:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
+  sleuth:
+    # https://github.com/spring-projects/spring-framework/issues/27844#issuescomment-1002866885
+    # https://github.com/spring-cloud/spring-cloud-sleuth/issues/2094
+    async:
+      enabled: false
+    enabled: false
+    sampler:
+      probability: 1 # report 100% of traces
+  zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
+    base-url: http://localhost:9411
+    enabled: false
+    locator:
+      discovery:
+        enabled: true
 
 server:
   port: 8080
@@ -70,6 +100,8 @@ jhipster:
     ehcache: # Ehcache configuration
       time-to-live-seconds: 3600 # By default objects stay 1 hour in the cache
       max-entries: 100 # Number of objects in each cache entry
+  registry:
+    password: admin
   # CORS is only enabled by default with the "dev" profile
   cors:
     # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
@@ -85,7 +117,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: MWExMDkyYzJlMzRiNDg2M2QwNDY0ZmE0NjA0YzY3NTI1NGY2MmM2M2RhNWY5ZmU3M2E4M2QwZDNmZTA4MWYwYzRjYTQzYTQ5MTU4N2I0ZjkzYTk3ZjMyMDA2YjI4NTY2Y2ZhYmMwMTZiYzdiYTY3NTc0ZDc2MTAxOWQwOGE0YjM=
+        base64-secret: Y2I2NmM1MWFjNzU2NTBmNWMzNTBjOWU4YmZjOGZlZTgzOTQwOWY0YWQwMDZhNjA4M2Y2MmQzZjQ1YmI3OTVlNWZmM2M0NmVhZTdhZTYyMjkxMDc2YzE2MDA0ODYwOWUzN2I3NzBmZDZlYzdjMzc4OTlhYTRmMDgwZjRmMTcyZTc=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
@@ -94,9 +126,9 @@ jhipster:
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
-      enabled: false
+      enabled: true
       host: localhost
-      port: 5000
+      port: 50000
       queue-size: 512
 # ===================================================================
 # Application specific properties
