@@ -1,6 +1,12 @@
 #!/usr/bin/env groovy
 
 node {
+    stage('clean workspace') {
+            steps {
+                deleteDir()  // This step cleans the workspace
+            }
+        }
+
     stage('checkout') {
         checkout scm
     }
