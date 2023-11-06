@@ -577,7 +577,7 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>Bruno-Orbelli/aplicada_logs_y_jenkins:latest</image>
+                            <image>Bruno-Orbelli/aplicada-logs-y-jenkins:latest</image>
                             <tags>
                                 <tag>${project.version}</tag>
                                 <tag>latest</tag>
